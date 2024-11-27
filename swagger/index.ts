@@ -10,54 +10,50 @@ const doc = {
   definitions: {
     // модель задачи
     Task: {
-      id: '1',
-      text: 'test',
-      done: false
+      "id": 34,
+      "body": "123",
+      "create": "1690207761767",
+      "remove": "",
+      "timeleft": "",
+      "deadline": "",
+      "link": "",
+      "visible": false,
+      "badges": []
     },
     // модель массива задач
     Tasks: [
       {
         // ссылка на модель задачи
-        $ref: '#/definitions/Todo'
+        $ref: '#/definitions/Task'
       }
     ],
     // модель задачи
     Badge: {
-      id: '1',
-      text: 'test',
-      done: false
+      "id": 3,
+      "color": 2,
+      "text": "Пробую сделать"
     },
     // модель массива задач
     Badges: [
       {
         // ссылка на модель задачи
-        $ref: '#/definitions/Todo'
+        $ref: '#/definitions/Badge'
       }
     ],
     // модель задачи
     Note: {
-      id: '1',
-      text: 'test',
-      done: false
+      "id": 1,
+      "body": "<h1>Тут будет HTML текст заметки</h1>",
+      "create": "1690207761767",
+      "visible": true
     },
     // модель массива задач
     Notes: [
       {
         // ссылка на модель задачи
-        $ref: '#/definitions/Todo'
+        $ref: '#/definitions/Note'
       }
-    ],
-    // // модель объекта с текстом новой задачи
-    // Text: {
-    //   text: 'test'
-    // },
-    // // модель объекта с изменениями существующей задачи
-    // Changes: {
-    //   changes: {
-    //     text: 'test',
-    //     done: true
-    //   }
-    // }
+    ]
   },
   host: 'localhost:8000',
   schemes: ['http']

@@ -21,25 +21,62 @@
         }
       },
       "post": {
-        "description": "Create new task",
-        "responses": {
-          "default": {
-            "description": ""
+        "description": "Endpoint added task.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data of task.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "string",
+                  "example": "Test task"
+                },
+                "deadline": {
+                  "type": "string",
+                  "example": "2024-03-13T16:38"
+                },
+                "link": {
+                  "type": "string",
+                  "example": "https://google.com"
+                },
+                "badges": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number",
+                        "example": 3
+                      },
+                      "color": {
+                        "type": "number",
+                        "example": 2
+                      },
+                      "text": {
+                        "type": "string",
+                        "example": "Пробую сделать"
+                      }
+                    }
+                  }
+                }
+              },
+              "required": [
+                "body",
+                "deadline"
+              ]
+            }
           }
-        }
-      },
-      "put": {
-        "description": "Update task parameters",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/oldtasks": {
-      "get": {
-        "description": "Get all closed tasks",
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -57,15 +94,43 @@
         }
       },
       "post": {
-        "description": "Create new notes",
+        "description": "Endpoint added note.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Body of note.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "string",
+                  "example": "<p>Test body</p>"
+                }
+              },
+              "required": [
+                "body"
+              ]
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
           }
         }
-      },
-      "put": {
-        "description": "Update note information",
+      }
+    },
+    "/badges": {
+      "get": {
+        "description": "Get all notes",
         "responses": {
           "default": {
             "description": ""
@@ -79,69 +144,98 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "example": "1"
+          "type": "number",
+          "example": 34
         },
-        "text": {
+        "body": {
           "type": "string",
-          "example": "test"
+          "example": "123"
         },
-        "done": {
+        "create": {
+          "type": "string",
+          "example": "1690207761767"
+        },
+        "remove": {
+          "type": "string",
+          "example": ""
+        },
+        "timeleft": {
+          "type": "string",
+          "example": ""
+        },
+        "deadline": {
+          "type": "string",
+          "example": ""
+        },
+        "link": {
+          "type": "string",
+          "example": ""
+        },
+        "visible": {
           "type": "boolean",
           "example": false
+        },
+        "badges": {
+          "type": "array",
+          "example": [],
+          "items": {}
         }
       }
     },
     "Tasks": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/Todo"
+        "$ref": "#/definitions/Task"
       }
     },
     "Badge": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "example": "1"
+          "type": "number",
+          "example": 3
+        },
+        "color": {
+          "type": "number",
+          "example": 2
         },
         "text": {
           "type": "string",
-          "example": "test"
-        },
-        "done": {
-          "type": "boolean",
-          "example": false
+          "example": "Пробую сделать"
         }
       }
     },
     "Badges": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/Todo"
+        "$ref": "#/definitions/Badge"
       }
     },
     "Note": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "example": "1"
+          "type": "number",
+          "example": 1
         },
-        "text": {
+        "body": {
           "type": "string",
-          "example": "test"
+          "example": "<h1>Тут будет HTML текст заметки</h1>"
         },
-        "done": {
+        "create": {
+          "type": "string",
+          "example": "1690207761767"
+        },
+        "visible": {
           "type": "boolean",
-          "example": false
+          "example": true
         }
       }
     },
     "Notes": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/Todo"
+        "$ref": "#/definitions/Note"
       }
     }
   }
