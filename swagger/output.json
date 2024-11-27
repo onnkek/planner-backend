@@ -1,0 +1,148 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Planner API",
+    "description": "This API is interface for interaction with tasks, badges and notes for planner",
+    "version": "1.0.0"
+  },
+  "host": "localhost:8000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/tasks": {
+      "get": {
+        "description": "Get all active tasks",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "Create new task",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "description": "Update task parameters",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/oldtasks": {
+      "get": {
+        "description": "Get all closed tasks",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/notes": {
+      "get": {
+        "description": "Get all notes",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "Create new notes",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "description": "Update note information",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Task": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "1"
+        },
+        "text": {
+          "type": "string",
+          "example": "test"
+        },
+        "done": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "Tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Todo"
+      }
+    },
+    "Badge": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "1"
+        },
+        "text": {
+          "type": "string",
+          "example": "test"
+        },
+        "done": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "Badges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Todo"
+      }
+    },
+    "Note": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "1"
+        },
+        "text": {
+          "type": "string",
+          "example": "test"
+        },
+        "done": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "Notes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Todo"
+      }
+    }
+  }
+}

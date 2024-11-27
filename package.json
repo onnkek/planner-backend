@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/index.ts"
+    "start": "nodemon ./src/index.ts",
+    "gen": "node ./swagger/index.ts"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,10 @@
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.0",
+    "@types/swagger-ui-express": "^4.1.7",
     "nodemon": "^3.1.7",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }

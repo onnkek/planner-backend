@@ -8,9 +8,11 @@ const express_1 = __importDefault(require("express"));
 // const path = require('path')
 const app = (0, express_1.default)();
 const port = 8000;
+
 app.get('/', (req, res) => {
     res.send('Hello world!');
 });
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
