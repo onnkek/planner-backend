@@ -15,8 +15,11 @@
       "get": {
         "description": "Get all active tasks",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Get all tasks.",
+            "schema": {
+              "$ref": "#/definitions/Tasks"
+            }
           }
         }
       },
@@ -84,12 +87,101 @@
         }
       }
     },
+    "/tasks/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a specific task.",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "example": "any"
+                },
+                "create": {
+                  "example": "any"
+                },
+                "remove": {
+                  "example": "any"
+                },
+                "timeleft": {
+                  "example": "any"
+                },
+                "deadline": {
+                  "example": "any"
+                },
+                "link": {
+                  "example": "any"
+                },
+                "visible": {
+                  "example": "any"
+                },
+                "badges": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/notes": {
       "get": {
-        "description": "Get all notes",
+        "description": "Get all active notes",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Get all notes.",
+            "schema": {
+              "$ref": "#/definitions/Notes"
+            }
           }
         }
       },
@@ -128,12 +220,189 @@
         }
       }
     },
+    "/notes/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a specific note.",
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "example": "any"
+                },
+                "create": {
+                  "example": "any"
+                },
+                "visible": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/badges": {
       "get": {
-        "description": "Get all notes",
+        "description": "Get all active badges",
+        "responses": {
+          "200": {
+            "description": "Get all badges.",
+            "schema": {
+              "$ref": "#/definitions/Badges"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Endpoint added badge.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data of badge.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "color": {
+                  "type": "number",
+                  "example": 3
+                },
+                "text": {
+                  "type": "string",
+                  "example": "WARNING"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
+          }
+        }
+      }
+    },
+    "/badges/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a specific badge.",
+            "schema": {
+              "$ref": "#/definitions/Badge"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "color": {
+                  "example": "any"
+                },
+                "text": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
