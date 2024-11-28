@@ -2,6 +2,7 @@ import express from 'express'
 import swaggerUi from 'swagger-ui-express'
 import fs from 'fs'
 import path from 'path'
+import cors from 'cors'
 
 interface NoteType {
   id: number,
@@ -35,11 +36,13 @@ interface DBType {
 }
 
 const app = express()
+
 const port = 8000
 const swaggerFile = JSON.parse(fs.readFileSync('./swagger/output.json').toString())
 
 const db: DBType = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'db.json'), 'utf-8'))
 
+app.use(cors());
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 app.use(express.json());
 
@@ -101,7 +104,9 @@ app.post('/tasks', (req, res) => {
             }
       }
   */
-  if (req.body.body && req.body.deadline && req.body.link && req.body.badges) {
+  console.log(req.body)
+  if (req.body.body && req.body.deadline) {
+    console.log(req.body)
     const newTask: TaskType = {
       "id": Math.random(),
       "body": req.body.body,
@@ -142,7 +147,9 @@ app.delete('/tasks/:id', (req, res) => {
 app.put('/tasks/:id', (req, res) => {
 
   const task = db.tasks.find(task => task.id === Number(req.params.id))
-  if (task && (req.body.body || req.body.create || req.body.remove || req.body.timeleft || req.body.deadline || req.body.link || req.body.visible || req.body.badges)) {
+  console.log(task)
+  console.log(req.body.visible)
+  if (task && (req.body.body || req.body.create || req.body.remove || req.body.timeleft || req.body.deadline || req.body.link || "visible" in req.body || req.body.badges)) {
 
     if (req.body.body) {
       task.body = req.body.body
@@ -162,7 +169,7 @@ app.put('/tasks/:id', (req, res) => {
     if (req.body.link) {
       task.link = req.body.link
     }
-    if (req.body.visible) {
+    if ("visible" in req.body) {
       task.visible = req.body.visible
     }
     if (req.body.badges) {
@@ -177,7 +184,7 @@ app.put('/tasks/:id', (req, res) => {
       }
       task.badges = badges
     }
-
+    console.log("МЕНЯЮ")
     fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
     res.status(200).send(task)
 
