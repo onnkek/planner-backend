@@ -5,10 +5,20 @@ import path from 'path'
 import cors from 'cors'
 
 interface NoteType {
-  id: number,
+  uid: number,
+  type: "note",
+  label: string,
   body: string,
-  create: number,
-  visible: boolean
+  create: string,
+  icon: string
+}
+
+interface TreeType {
+  uid: number,
+  type: "folder" | "note",
+  label: string,
+  icon: string,
+  children: NoteType[] | TreeType[]
 }
 
 interface TaskType {
@@ -215,7 +225,7 @@ app.get('/notes/:id', (req, res) => {
            schema: { $ref: '#/definitions/Note' }
    } */
 
-  const note = db.notes.find(note => note.id === Number(req.params.id))
+  const note = db.notes.find(note => note.uid === Number(req.params.id))
   if (note) {
     res.send(note)
   } else {
@@ -246,10 +256,15 @@ app.post('/notes', (req, res) => {
   */
   if (req.body.body) {
     const newNote: NoteType = {
-      "id": Math.random(),
-      "body": req.body.body,
-      "create": Date.now(),
-      "visible": true
+      uid: Math.random(),
+      type: "note",
+      label: "New note",
+      body: req.body.body,
+      create: Date.now().toString(),
+      icon: ""
+    }
+    if (req.body.name) {
+      newNote.label = req.body.name
     }
 
     db.notes.push(newNote)
@@ -265,7 +280,7 @@ app.post('/notes', (req, res) => {
 
 app.delete('/notes/:id', (req, res) => {
 
-  const note = db.notes.find(note => note.id === Number(req.params.id))
+  const note = db.notes.find(note => note.uid === Number(req.params.id))
   if (note) {
     const index = db.notes.indexOf(note)
     db.notes.splice(index, 1);
@@ -280,17 +295,17 @@ app.delete('/notes/:id', (req, res) => {
 
 app.put('/notes/:id', (req, res) => {
 
-  const note = db.notes.find(note => note.id === Number(req.params.id))
-  if (note && (req.body.body || req.body.create || req.body.visible)) {
+  const note = db.notes.find(note => note.uid === Number(req.params.id))
+  if (note && (req.body.body || req.body.create || req.body.name)) {
 
     if (req.body.body) {
       note.body = req.body.body
     }
+    if (req.body.name) {
+      note.label = req.body.name
+    }
     if (req.body.create) {
       note.create = req.body.create
-    }
-    if (req.body.visible) {
-      note.visible = req.body.visible
     }
 
     fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
