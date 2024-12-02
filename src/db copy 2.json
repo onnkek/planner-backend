@@ -244,7 +244,7 @@
       "timeleft": "",
       "deadline": "2024-03-13T16:38",
       "link": "",
-      "visible": true,
+      "visible": false,
       "badges": []
     },
     {
@@ -282,41 +282,6 @@
       ]
     },
     {
-      "id": 0.31802842884505833,
-      "body": "G",
-      "create": "1732775409221",
-      "remove": "",
-      "timeleft": "",
-      "deadline": "2024-11-28T11:25",
-      "link": "123",
-      "visible": true,
-      "badges": [
-        {}
-      ]
-    },
-    {
-      "id": 0.5212305042210303,
-      "body": "G",
-      "create": "1732775504473",
-      "remove": "",
-      "timeleft": "",
-      "deadline": "2024-11-28T11:25",
-      "link": "",
-      "visible": true,
-      "badges": []
-    },
-    {
-      "id": 0.7614065051213434,
-      "body": "12312312313",
-      "create": "1732775592239",
-      "remove": "",
-      "timeleft": "",
-      "deadline": "2024-11-28T11:34",
-      "link": "",
-      "visible": true,
-      "badges": []
-    },
-    {
       "id": 0.017236469138761423,
       "body": "GGGGGGGGGGGGGGGG",
       "create": "1732775618313",
@@ -341,7 +306,7 @@
       "timeleft": "",
       "deadline": "2024-11-28T11:49",
       "link": "",
-      "visible": true,
+      "visible": false,
       "badges": []
     },
     {
@@ -352,96 +317,121 @@
       "timeleft": "",
       "deadline": "2024-11-28T12:23",
       "link": "",
-      "visible": true,
+      "visible": false,
+      "badges": []
+    },
+    {
+      "id": 0.888671028552253,
+      "body": "1231231",
+      "create": "1732868979011",
+      "remove": "",
+      "timeleft": "",
+      "deadline": "2024-11-29T13:31",
+      "link": "",
+      "visible": false,
       "badges": []
     }
   ],
-  "notes": [
-    {
-      "uid": 1,
-      "label": "Notes",
-      "icon": "folderIcon",
-      "select": false,
-      "children": {
-        "items": [
+  "folders": {
+    "uid": 1,
+    "label": "root",
+    "create": "01.01.2001",
+    "children": [
+      {
+        "uid": 2,
+        "label": "Work",
+        "create": "01.01.2002",
+        "children": [
           {
-            "uid": 2,
-            "label": "Technology",
-            "icon": "folderIcon",
-            "select": false,
-            "children": {
-              "items": [
-                {
-                  "uid": 3,
-                  "label": "Note 1",
-                  "icon": "testIcon",
-                  "select": false,
-                  "children": {
-                    "items": []
-                  }
-                },
-                {
-                  "uid": 4,
-                  "label": "Note 2",
-                  "icon": "testIcon",
-                  "select": false,
-                  "children": {
-                    "items": []
-                  }
-                },
-                {
-                  "uid": 5,
-                  "label": "Note 3",
-                  "icon": "testIcon",
-                  "select": false,
-                  "children": {
-                    "items": []
-                  }
-                }
-              ]
-            }
+            "uid": 3,
+            "label": "Work 1",
+            "create": "01.01.2003",
+            "children": []
+          },
+          {
+            "uid": 4,
+            "label": "Work 2",
+            "create": "01.01.2004",
+            "children": []
+          },
+          {
+            "uid": 5,
+            "label": "Work 3",
+            "create": "01.01.2005",
+            "children": []
+          },
+          {
+            "uid": 6,
+            "label": "Work 4",
+            "create": "01.01.2006",
+            "children": []
           }
         ]
+      },
+      {
+        "uid": 7,
+        "label": "Home",
+        "create": "01.01.2007",
+        "children": []
+      },
+      {
+        "uid": 8,
+        "label": "Test folder",
+        "create": "01.01.2008",
+        "children": []
       }
+    ]
+  },
+  "notes": [
+    {
+      "uid": 3,
+      "folderUid": "",
+      "label": "Note 1",
+      "body": "<h3>Ярик бочёк потик</h3>\n<p>Свободная HTML разметка встраиваемая сюда для вёрстки заметки</p>\n<b>123</b>\n<span style=\"color: red\">123</span>\n<br>\n<div style=\"display:flex\">\n<img src=\"https://static.mash.ru/unsafe/czM6Ly9tYXNoL2ltYWdlLzIwMjItMTEtMTcvYzE0YTNlMDctNzg5Yi00MjNlLWI1NmEtMzJhMTQwM2U2ZWUxLzg4NjhjN2I0LTUyYWUtNWEzMC05ODFlLWUwYzVhODIyNjU4MS5wbmc\">\n<img src=\"https://static.mash.ru/unsafe/czM6Ly9tYXNoL2ltYWdlLzIwMjItMTEtMTcvYzE0YTNlMDctNzg5Yi00MjNlLWI1NmEtMzJhMTQwM2U2ZWUxLzg4NjhjN2I0LTUyYWUtNWEzMC05ODFlLWUwYzVhODIyNjU4MS5wbmc\">\n</div>",
+      "create": "01.01.2000",
+      "icon": "test"
+    },
+    {
+      "uid": 4,
+      "folderUid": "",
+      "label": "Test note",
+      "body": "<h2>LINKIN PARK</h2><p>Свободная HTML разметка встраиваемая сюда для вёрстки заметки</p><b>123</b><span style=\"color: red\">123</span><br><img src=\"https://upload.wikimedia.org/wikipedia/ru/4/4b/FromZeroArtwork.jpg\" width=\"300px\"><br>",
+      "create": "29.11.2024",
+      "icon": "test"
+    },
+    {
+      "uid": 5,
+      "folderUid": "",
+      "label": "I have a one note",
+      "body": "<h3>Ярик бочёк потик</h3><p>Свободная HTML разметка встраиваемая сюда для вёрстки заметки</p><b>123</b><span style=\"color: red\">123</span><br><img src=\"https://static.mash.ru/unsafe/czM6Ly9tYXNoL2ltYWdlLzIwMjItMTEtMTcvYzE0YTNlMDctNzg5Yi00MjNlLWI1NmEtMzJhMTQwM2U2ZWUxLzg4NjhjN2I0LTUyYWUtNWEzMC05ODFlLWUwYzVhODIyNjU4MS5wbmc\"><br>",
+      "create": "09.09.2023",
+      "icon": "test"
+    },
+    {
+      "uid": 13,
+      "folderUid": "",
+      "label": "Note 1",
+      "body": "<h1>Тут будет название заметки</h1><p>Свободная HTML разметка встраиваемая сюда для вёрстки заметки</p><b>123</b><span style=\"color: red\">123</span><br><img src=\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaA23Orn8cIauyUDtC-hmrUTguMwW9q5kyvg&s\"><br>",
+      "create": "01.01.2000",
+      "icon": "test"
+    },
+    {
+      "uid": 14,
+      "folderUid": "",
+      "label": "Test note",
+      "body": "<h2>LINKIN PARK</h2><p>Свободная HTML разметка встраиваемая сюда для вёрстки заметки</p><b>123</b><span style=\"color: red\">123</span><br><img src=\"https://upload.wikimedia.org/wikipedia/ru/4/4b/FromZeroArtwork.jpg\" width=\"300px\"><br>",
+      "create": "29.11.2024",
+      "icon": "test"
+    },
+    {
+      "uid": 15,
+      "folderUid": "",
+      "label": "I have a one note",
+      "body": "<h3>Ярик бочёк потик</h3><p>Свободная HTML разметка встраиваемая сюда для вёрстки заметки</p><b>123</b><span style=\"color: red\">123</span><br><img src=\"https://static.mash.ru/unsafe/czM6Ly9tYXNoL2ltYWdlLzIwMjItMTEtMTcvYzE0YTNlMDctNzg5Yi00MjNlLWI1NmEtMzJhMTQwM2U2ZWUxLzg4NjhjN2I0LTUyYWUtNWEzMC05ODFlLWUwYzVhODIyNjU4MS5wbmc\"><br>",
+      "create": "09.09.2023",
+      "icon": "test"
     }
   ],
-  // "notes": [
-  //   {
-  //     "id": 1,
-  //     "name": "First",
-  //     "body": "<h1>Тут будет название заметки</h1><p>Свободная HTML разметка встраиваемая сюда для вёрстки заметки</p><b>123</b><span style=\"color: red\">123</span><br><img src=\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaA23Orn8cIauyUDtC-hmrUTguMwW9q5kyvg&s\"><br>",
-  //     "create": "1690207761767",
-  //     "visible": "true"
-  //   },
-  //   {
-  //     "id": 2,
-  //     "name": "Second",
-  //     "body": "<h1>Тут будет название заметки</h1><p>Свободная HTML разметка встраиваемая сюда для вёрстки заметки</p><b>123</b><span style=\"color: red\">123</span><br><img src=\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaA23Orn8cIauyUDtC-hmrUTguMwW9q5kyvg&s\"><br>",
-  //     "create": "1690207761767",
-  //     "visible": true
-  //   },
-  //   {
-  //     "id": 3,
-  //     "name": "Test",
-  //     "body": "<h1>Тут будет название заметки</h1><p>Свободная HTML разметка встраиваемая сюда для вёрстки заметки</p><b>123</b><span style=\"color: red\">123</span><br><img src=\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaA23Orn8cIauyUDtC-hmrUTguMwW9q5kyvg&s\"><br>",
-  //     "create": "1690207761767",
-  //     "visible": true
-  //   },
-  //   {
-  //     "id": 4,
-  //     "name": "LOL AFTER ALL",
-  //     "body": "<h1>Тут будет название заметки</h1><p>Свободная HTML разметка встраиваемая сюда для вёрстки заметки</p><b>123</b><span style=\"color: red\">123</span><br><img src=\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaA23Orn8cIauyUDtC-hmrUTguMwW9q5kyvg&s\"><br>",
-  //     "create": "1690207761767",
-  //     "visible": true
-  //   },
-  //   {
-  //     "id": 0.9793208747110078,
-  //     "name": "ЯРИК БОЧЁК ПОТИК",
-  //     "body": "<h1>ЗАМЕТКА 2</h1>",
-  //     "create": 1732700165095,
-  //     "visible": true
-  //   }
-  // ],
   "badges": [
     {
       "id": 3,

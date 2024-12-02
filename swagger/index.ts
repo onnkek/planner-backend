@@ -53,6 +53,34 @@ const doc = {
         // ссылка на модель задачи
         $ref: '#/definitions/Note'
       }
+    ],
+    // модель задачи
+    Folder: {
+      "uid": 1,
+      "label": "Folder 1",
+      "create": "22.22.2222",
+      "children": [
+        {
+          "uid": 2,
+          "label": "Folder 1.1",
+          "create": "22.22.2222",
+          "children": []
+        },
+        {
+          "uid": 3,
+          "label": "Folder 1.2",
+          "create": "22.22.2222",
+          "children": []
+        }
+      ]
+    },
+    // модель массива задач
+    Folders: [
+      {
+        // ссылка на модель задачи
+        $ref: '#/definitions/Folder'
+
+      }
     ]
   },
   host: 'localhost:8000',

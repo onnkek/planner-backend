@@ -6,19 +6,11 @@ import cors from 'cors'
 
 interface NoteType {
   uid: number,
-  type: "note",
+  folderUid: number,
   label: string,
   body: string,
   create: string,
-  icon: string
-}
-
-interface TreeType {
-  uid: number,
-  type: "folder" | "note",
-  label: string,
   icon: string,
-  children: NoteType[] | TreeType[]
 }
 
 interface TaskType {
@@ -39,9 +31,16 @@ interface BadgeType {
   text: string
 }
 
+interface FolderType {
+  uid: number
+  label: string
+  create: string
+  children: FolderType[] | NoteType[]
+}
+
 interface DBType {
   tasks: TaskType[],
-  notes: NoteType[],
+  notes: FolderType,
   badges: BadgeType[]
 }
 
@@ -219,106 +218,125 @@ app.get('/notes', (req, res) => {
 
 })
 
-app.get('/notes/:id', (req, res) => {
-  /* #swagger.responses[200] = {
-           description: 'Get a specific note.',
-           schema: { $ref: '#/definitions/Note' }
-   } */
+// app.get('/notes/:id', (req, res) => {
+//   /* #swagger.responses[200] = {
+//            description: 'Get a specific note.',
+//            schema: { $ref: '#/definitions/Note' }
+//    } */
 
-  const note = db.notes.find(note => note.uid === Number(req.params.id))
-  if (note) {
-    res.send(note)
-  } else {
-    res.send(404)
-  }
-
-
-})
-
-app.post('/notes', (req, res) => {
-  /*  #swagger.auto = false
-
-            #swagger.path = '/notes'
-            #swagger.method = 'post'
-            #swagger.description = 'Endpoint added note.'
-            #swagger.produces = ["application/json"]
-            #swagger.consumes = ["application/json"]
-        */
-
-  /*  #swagger.parameters['body'] = {
-          in: 'body',
-          description: 'Body of note.',
-          required: true,
-          schema: {
-                $body: '<p>Test body</p>'
-            }
-      }
-  */
-  if (req.body.body) {
-    const newNote: NoteType = {
-      uid: Math.random(),
-      type: "note",
-      label: "New note",
-      body: req.body.body,
-      create: Date.now().toString(),
-      icon: ""
-    }
-    if (req.body.name) {
-      newNote.label = req.body.name
-    }
-
-    db.notes.push(newNote)
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.notes)
-  } else {
-    res.send(400)
-  }
+//   const note = db.notes.find(note => note.uid === Number(req.params.id))
+//   if (note) {
+//     res.send(note)
+//   } else {
+//     res.send(404)
+//   }
 
 
+// })
 
-})
+// app.post('/notes', (req, res) => {
+//   /*  #swagger.auto = false
 
-app.delete('/notes/:id', (req, res) => {
+//             #swagger.path = '/notes'
+//             #swagger.method = 'post'
+//             #swagger.description = 'Endpoint added note.'
+//             #swagger.produces = ["application/json"]
+//             #swagger.consumes = ["application/json"]
+//         */
 
-  const note = db.notes.find(note => note.uid === Number(req.params.id))
-  if (note) {
-    const index = db.notes.indexOf(note)
-    db.notes.splice(index, 1);
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.notes)
+//   /*  #swagger.parameters['body'] = {
+//           in: 'body',
+//           description: 'Body of note.',
+//           required: true,
+//           schema: {
+//                 $body: '<p>Test body</p>'
+//             }
+//       }
+//   */
+//   if (req.body.body) {
+//     const newNote: NoteType = {
+//       uid: Math.random(),
+//       folderUid: 0,
+//       label: "New note",
+//       body: req.body.body,
+//       create: Date.now().toString(),
+//       icon: ""
+//     }
+//     if (req.body.name) {
+//       newNote.label = req.body.name
+//     }
 
-  } else {
-    res.send(404)
-  }
-
-})
-
-app.put('/notes/:id', (req, res) => {
-
-  const note = db.notes.find(note => note.uid === Number(req.params.id))
-  if (note && (req.body.body || req.body.create || req.body.name)) {
-
-    if (req.body.body) {
-      note.body = req.body.body
-    }
-    if (req.body.name) {
-      note.label = req.body.name
-    }
-    if (req.body.create) {
-      note.create = req.body.create
-    }
-
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(note)
-
-  } else {
-    res.send(404)
-  }
-
-})
+//     db.notes.push(newNote)
+//     fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+//     res.status(200).send(db.notes)
+//   } else {
+//     res.send(400)
+//   }
 
 
 
+// })
+
+// app.delete('/notes/:id', (req, res) => {
+
+//   const note = db.notes.find(note => note.uid === Number(req.params.id))
+//   if (note) {
+//     const index = db.notes.indexOf(note)
+//     db.notes.splice(index, 1);
+//     fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+//     res.status(200).send(db.notes)
+
+//   } else {
+//     res.send(404)
+//   }
+
+// })
+
+// app.put('/notes/:id', (req, res) => {
+//   const note = db.notes.find(note => note.uid === Number(req.params.id))
+//   console.log(req.body.body)
+//   const body = removeSlash(req.body.body)
+//   console.log(body)
+
+//   if (note && (body || req.body.create || req.body.name)) {
+
+//     if (body) {
+//       note.body = body
+//     }
+//     if (req.body.name) {
+//       note.label = req.body.name
+//     }
+//     if (req.body.create) {
+//       note.create = req.body.create
+//     }
+
+//     fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+//     res.status(200).send(note)
+
+//   } else {
+//     res.send(404)
+//   }
+
+// })
+
+
+
+// app.get('/folders', (req, res) => {
+//   // #swagger.description = 'Get all active folders.'
+//   /* #swagger.responses[200] = {
+//            description: 'Get all folders.',
+//            schema: { $ref: '#/definitions/Folders' }
+//    } */
+
+//   res.send(db.folders)
+
+// })
+
+
+
+const removeSlash = (input: string): string => {
+  return input.replace(/"/gi, "\"")
+}
 
 
 app.get('/badges', (req, res) => {
