@@ -1,10 +1,11 @@
 {
-  "name": "prodgun-backend",
+  "name": "planner-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/index.ts",
+    "watch": "nodemon ./src/index.ts --ignore ./src/db.json",
+    "start": "node ./src/index.js",
     "gen": "node ./swagger/index.ts"
   },
   "repository": {

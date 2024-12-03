@@ -1,21 +1,18 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
-const cors_1 = __importDefault(require("cors"));
-const app = (0, express_1.default)();
-const port = 8000;
-const swaggerFile = JSON.parse(fs_1.default.readFileSync('./swagger/output.json').toString());
-const db = JSON.parse(fs_1.default.readFileSync(path_1.default.resolve(__dirname, 'db.json'), 'utf-8'));
+var express_1 = require("express");
+var swagger_ui_express_1 = require("swagger-ui-express");
+var fs_1 = require("fs");
+var path_1 = require("path");
+var cors_1 = require("cors");
+var app = (0, express_1.default)();
+var port = 8000;
+var swaggerFile = JSON.parse(fs_1.default.readFileSync('./swagger/output.json').toString());
+var db = JSON.parse(fs_1.default.readFileSync(path_1.default.resolve(__dirname, 'db.json'), 'utf-8'));
 app.use((0, cors_1.default)());
 app.use('/api', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerFile));
 app.use(express_1.default.json());
-app.get('/tasks', (req, res) => {
+app.get('/tasks', function (req, res) {
     // #swagger.description = 'Get all active tasks'
     /* #swagger.responses[200] = {
              description: 'Get all tasks.',
@@ -23,12 +20,12 @@ app.get('/tasks', (req, res) => {
      } */
     res.send(db.tasks);
 });
-app.get('/tasks/:id', (req, res) => {
+app.get('/tasks/:id', function (req, res) {
     /* #swagger.responses[200] = {
              description: 'Get a specific task.',
              schema: { $ref: '#/definitions/Task' }
      } */
-    const task = db.tasks.find(task => task.id === Number(req.params.id));
+    var task = db.tasks.find(function (task) { return task.id === Number(req.params.id); });
     if (task) {
         res.send(task);
     }
@@ -36,7 +33,7 @@ app.get('/tasks/:id', (req, res) => {
         res.send(404);
     }
 });
-app.post('/tasks', (req, res) => {
+app.post('/tasks', function (req, res) {
     /*  #swagger.auto = false
   
               #swagger.path = '/tasks'
@@ -66,7 +63,7 @@ app.post('/tasks', (req, res) => {
     console.log(req.body);
     if (req.body.body && req.body.deadline) {
         console.log(req.body);
-        const newTask = {
+        var newTask = {
             "id": Math.random(),
             "body": req.body.body,
             "create": Date.now().toString(),
@@ -85,10 +82,10 @@ app.post('/tasks', (req, res) => {
         res.send(400);
     }
 });
-app.delete('/tasks/:id', (req, res) => {
-    const task = db.tasks.find(task => task.id === Number(req.params.id));
+app.delete('/tasks/:id', function (req, res) {
+    var task = db.tasks.find(function (task) { return task.id === Number(req.params.id); });
     if (task) {
-        const index = db.tasks.indexOf(task);
+        var index = db.tasks.indexOf(task);
         db.tasks.splice(index, 1);
         fs_1.default.writeFileSync(path_1.default.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8');
         res.status(200).send(db.tasks);
@@ -97,8 +94,8 @@ app.delete('/tasks/:id', (req, res) => {
         res.send(404);
     }
 });
-app.put('/tasks/:id', (req, res) => {
-    const task = db.tasks.find(task => task.id === Number(req.params.id));
+app.put('/tasks/:id', function (req, res) {
+    var task = db.tasks.find(function (task) { return task.id === Number(req.params.id); });
     console.log(task);
     console.log(req.body.visible);
     if (task && (req.body.body || req.body.create || req.body.remove || req.body.timeleft || req.body.deadline || req.body.link || "visible" in req.body || req.body.badges)) {
@@ -124,8 +121,8 @@ app.put('/tasks/:id', (req, res) => {
             task.visible = req.body.visible;
         }
         if (req.body.badges) {
-            let badges = [];
-            for (let i in req.body.badges) {
+            var badges = [];
+            for (var i in req.body.badges) {
                 if (typeof req.body.badges[i] === 'number') {
                     badges.push(req.body.badges[i]);
                 }
@@ -143,7 +140,7 @@ app.put('/tasks/:id', (req, res) => {
         res.send(404);
     }
 });
-app.get('/notes', (req, res) => {
+app.get('/notes', function (req, res) {
     // #swagger.description = 'Get all active notes'
     /* #swagger.responses[200] = {
              description: 'Get all notes.',
@@ -210,7 +207,7 @@ app.get('/notes', (req, res) => {
 //     res.send(404)
 //   }
 // })
-app.put('/notes', (req, res) => {
+app.put('/notes', function (req, res) {
     db.notes = req.body;
     fs_1.default.writeFileSync(path_1.default.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8');
     res.status(200).send(db.notes);
@@ -223,10 +220,10 @@ app.put('/notes', (req, res) => {
 //    } */
 //   res.send(db.folders)
 // })
-const removeSlash = (input) => {
+var removeSlash = function (input) {
     return input.replace(/"/gi, "\"");
 };
-app.get('/badges', (req, res) => {
+app.get('/badges', function (req, res) {
     // #swagger.description = 'Get all active badges'
     /* #swagger.responses[200] = {
              description: 'Get all badges.',
@@ -234,12 +231,12 @@ app.get('/badges', (req, res) => {
      } */
     res.send(db.badges);
 });
-app.get('/badges/:id', (req, res) => {
+app.get('/badges/:id', function (req, res) {
     /* #swagger.responses[200] = {
              description: 'Get a specific badge.',
              schema: { $ref: '#/definitions/Badge' }
      } */
-    const badge = db.badges.find(badge => badge.id === Number(req.params.id));
+    var badge = db.badges.find(function (badge) { return badge.id === Number(req.params.id); });
     if (badge) {
         res.send(badge);
     }
@@ -247,7 +244,7 @@ app.get('/badges/:id', (req, res) => {
         res.send(404);
     }
 });
-app.post('/badges', (req, res) => {
+app.post('/badges', function (req, res) {
     /*  #swagger.auto = false
   
               #swagger.path = '/badges'
@@ -267,7 +264,7 @@ app.post('/badges', (req, res) => {
         }
     */
     if (req.body.text && req.body.color) {
-        const newBadge = {
+        var newBadge = {
             "id": Math.random(),
             "color": req.body.color,
             "text": req.body.text
@@ -280,10 +277,10 @@ app.post('/badges', (req, res) => {
         res.send(400);
     }
 });
-app.delete('/badges/:id', (req, res) => {
-    const badge = db.badges.find(badge => badge.id === Number(req.params.id));
+app.delete('/badges/:id', function (req, res) {
+    var badge = db.badges.find(function (badge) { return badge.id === Number(req.params.id); });
     if (badge) {
-        const index = db.badges.indexOf(badge);
+        var index = db.badges.indexOf(badge);
         db.badges.splice(index, 1);
         fs_1.default.writeFileSync(path_1.default.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8');
         res.status(200).send(db.badges);
@@ -292,8 +289,8 @@ app.delete('/badges/:id', (req, res) => {
         res.send(404);
     }
 });
-app.put('/badges/:id', (req, res) => {
-    const badge = db.badges.find(badge => badge.id === Number(req.params.id));
+app.put('/badges/:id', function (req, res) {
+    var badge = db.badges.find(function (badge) { return badge.id === Number(req.params.id); });
     if (badge && (req.body.color || req.body.text)) {
         if (req.body.color) {
             badge.color = req.body.color;
@@ -308,6 +305,6 @@ app.put('/badges/:id', (req, res) => {
         res.send(404);
     }
 });
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+app.listen(port, function () {
+    console.log("Example app listening on port ".concat(port));
 });

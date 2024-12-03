@@ -292,32 +292,12 @@ app.get('/notes', (req, res) => {
 
 // })
 
-// app.put('/notes/:id', (req, res) => {
-//   const note = db.notes.find(note => note.uid === Number(req.params.id))
-//   console.log(req.body.body)
-//   const body = removeSlash(req.body.body)
-//   console.log(body)
-
-//   if (note && (body || req.body.create || req.body.name)) {
-
-//     if (body) {
-//       note.body = body
-//     }
-//     if (req.body.name) {
-//       note.label = req.body.name
-//     }
-//     if (req.body.create) {
-//       note.create = req.body.create
-//     }
-
-//     fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-//     res.status(200).send(note)
-
-//   } else {
-//     res.send(404)
-//   }
-
-// })
+app.put('/notes', (req, res) => {
+  
+  db.notes = req.body
+  fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+  res.status(200).send(db.notes)
+})
 
 
 
