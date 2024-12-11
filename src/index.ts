@@ -64,7 +64,7 @@ app.get('/tasks', (req, res) => {
            description: 'Get all tasks.',
            schema: { $ref: '#/definitions/Tasks' }
    } */
-  console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] GET /tasks`)
+  console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.host}] GET /tasks`)
   res.send(db.tasks)
 
 })
