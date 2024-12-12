@@ -38,7 +38,28 @@ interface FolderType {
   children: FolderType[] | NoteType[]
 }
 
+interface VacationType {
+  id: number,
+  start: string,
+  end: string
+}
+
+interface HolidayType {
+  id: number,
+  day: string
+}
+
+interface DateType {
+  vacations: VacationType[]
+  holidays: HolidayType[]
+}
+
+interface SettingsType {
+  date: DateType
+}
+
 interface DBType {
+  settings: SettingsType,
   tasks: TaskType[],
   notes: FolderType,
   badges: BadgeType[]
@@ -422,7 +443,77 @@ app.put('/badges/:id', (req, res) => {
 })
 
 
+app.get('/settings', (req, res) => {
+  // #swagger.description = 'Get all settings'
+  /* #swagger.responses[200] = {
+           description: 'Get all settings.',
+           schema: { $ref: '#/definitions/Settings' }
+   } */
+  console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] GET /settings`)
+  res.send(db.settings)
 
+})
+app.post('/settings/vacations', (req, res) => {
+
+  if (req.body.id && req.body.start && req.body.end) {
+    const newVacation: VacationType = {
+      "id": req.body.id,
+      "start": req.body.start,
+      "end": req.body.end
+    }
+    console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] POST /settings/vacations`)
+    db.settings.date.vacations.push(newVacation)
+    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+    res.status(200).send(db.settings)
+  } else {
+    res.send(400)
+  }
+})
+app.post('/settings/holidays', (req, res) => {
+
+  if (req.body.id && req.body.day) {
+    const newHoliday: HolidayType = {
+      "id": req.body.id,
+      "day": req.body.day
+    }
+    console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] POST /settings/holidays`)
+    db.settings.date.holidays.push(newHoliday)
+    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+    res.status(200).send(db.settings)
+  } else {
+    res.send(400)
+  }
+})
+
+app.delete('/settings/holidays/:id', (req, res) => {
+
+  const holiday = db.settings.date.holidays.find(holiday => holiday.id === Number(req.params.id))
+  if (holiday) {
+    const index = db.settings.date.holidays.indexOf(holiday)
+    db.settings.date.holidays.splice(index, 1);
+    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+    res.status(200).send(db.settings)
+    console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] DELETE /settings/holidays/${req.params.id}`)
+  } else {
+    res.send(404)
+  }
+
+})
+
+app.delete('/settings/vacations/:id', (req, res) => {
+
+  const vacation = db.settings.date.vacations.find(vacation => vacation.id === Number(req.params.id))
+  if (vacation) {
+    const index = db.settings.date.vacations.indexOf(vacation)
+    db.settings.date.vacations.splice(index, 1);
+    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+    res.status(200).send(db.settings)
+    console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] DELETE /settings/vacations/${req.params.id}`)
+  } else {
+    res.send(404)
+  }
+
+})
 
 
 app.listen(port, () => {
