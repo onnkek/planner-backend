@@ -44,14 +44,25 @@ interface VacationType {
   end: string
 }
 
+interface WorkingType {
+  id: number,
+  day: string
+}
+
 interface HolidayType {
   id: number,
   day: string
 }
 
+interface WeekendType {
+  highlight: boolean
+}
+
 interface DateType {
   vacations: VacationType[]
   holidays: HolidayType[]
+  workings: WorkingType[]
+  weekend: WeekendType
 }
 
 interface SettingsType {
@@ -453,6 +464,54 @@ app.get('/settings', (req, res) => {
   res.send(db.settings)
 
 })
+
+app.post('/settings/workings', (req, res) => {
+
+  if (req.body.id && req.body.day) {
+    const newWorking: WorkingType = {
+      "id": req.body.id,
+      "day": req.body.day
+    }
+    console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] POST /settings/workings`)
+    db.settings.date.workings.push(newWorking)
+    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+    res.status(200).send(db.settings)
+  } else {
+    res.send(400)
+  }
+})
+
+app.delete('/settings/workings/:id', (req, res) => {
+
+  const working = db.settings.date.workings.find(working => working.id === Number(req.params.id))
+  if (working) {
+    const index = db.settings.date.workings.indexOf(working)
+    db.settings.date.workings.splice(index, 1);
+    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+    res.status(200).send(db.settings)
+    console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] DELETE /settings/workings/${req.params.id}`)
+  } else {
+    res.send(404)
+  }
+
+})
+
+app.put('/settings/weekend', (req, res) => {
+
+
+  if (req.body) {
+    db.settings.date.weekend = req.body
+    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+    res.status(200).send(db.settings)
+    console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] PUT /settings/weekend`)
+  } else {
+    res.send(404)
+  }
+
+})
+
+
+
 app.post('/settings/vacations', (req, res) => {
 
   if (req.body.id && req.body.start && req.body.end) {
