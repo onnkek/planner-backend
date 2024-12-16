@@ -69,11 +69,17 @@ interface SettingsType {
   date: DateType
 }
 
-interface DBType {
-  settings: SettingsType,
-  tasks: TaskType[],
-  notes: FolderType,
+interface DBNotesType {
+  notes: FolderType
+}
+interface DBBadgesType {
   badges: BadgeType[]
+}
+interface DBTasksType {
+  tasks: TaskType[]
+}
+interface DBSettingsType {
+  settings: SettingsType
 }
 
 const app = express()
@@ -81,8 +87,18 @@ const app = express()
 const port = 8000
 const swaggerFile = JSON.parse(fs.readFileSync('./swagger/output.json').toString())
 
-const db: DBType = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'db.json'), 'utf-8'))
-const dateFormat = { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' }
+
+const tasksPath = 'db/tasks.json'
+const notesPath = 'db/notes.json'
+const badgesPath = 'db/badges.json'
+const settingsPath = 'db/settings.json'
+
+
+const dbTasks: DBTasksType = JSON.parse(fs.readFileSync(path.resolve(__dirname, tasksPath), 'utf-8'))
+const dbNotes: DBNotesType = JSON.parse(fs.readFileSync(path.resolve(__dirname, notesPath), 'utf-8'))
+const dbBadges: DBBadgesType = JSON.parse(fs.readFileSync(path.resolve(__dirname, badgesPath), 'utf-8'))
+const dbSettings: DBSettingsType = JSON.parse(fs.readFileSync(path.resolve(__dirname, settingsPath), 'utf-8'))
+
 app.use(cors());
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 app.use(express.json());
@@ -97,17 +113,12 @@ app.get('/tasks', (req, res) => {
            schema: { $ref: '#/definitions/Tasks' }
    } */
   console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.host}] GET /tasks`)
-  res.send(db.tasks)
-
+  res.send(dbTasks.tasks)
 })
 
 app.get('/tasks/:id', (req, res) => {
-  /* #swagger.responses[200] = {
-           description: 'Get a specific task.',
-           schema: { $ref: '#/definitions/Task' }
-   } */
   console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] GET /tasks/${req.params.id}`)
-  const task = db.tasks.find(task => task.id === Number(req.params.id))
+  const task = dbTasks.tasks.find(task => task.id === Number(req.params.id))
   if (task) {
     res.send(task)
   } else {
@@ -118,33 +129,6 @@ app.get('/tasks/:id', (req, res) => {
 })
 
 app.post('/tasks', (req, res) => {
-  /*  #swagger.auto = false
-
-            #swagger.path = '/tasks'
-            #swagger.method = 'post'
-            #swagger.description = 'Endpoint added task.'
-            #swagger.produces = ["application/json"]
-            #swagger.consumes = ["application/json"]
-        */
-
-  /*  #swagger.parameters['body'] = {
-          in: 'body',
-          description: 'Data of task.',
-          required: true,
-          schema: {
-                $body: 'Test task',
-                $deadline: '2024-03-13T16:38',
-                link: 'https://google.com',
-                badges: [
-                  {
-                    "id": 3,
-                    "color": 2,
-                    "text": "Пробую сделать"
-                  }
-                ]
-            }
-      }
-  */
   console.log(req.body)
   if (req.body.body && req.body.deadline) {
     console.log(req.body)
@@ -160,9 +144,9 @@ app.post('/tasks', (req, res) => {
       "badges": req.body.badges
     }
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] POST /tasks/`)
-    db.tasks.push(newTask)
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.tasks)
+    dbTasks.tasks.push(newTask)
+    fs.writeFileSync(path.resolve(__dirname, tasksPath), JSON.stringify(dbTasks), 'utf-8')
+    res.status(200).send(dbTasks)
   } else {
     res.send(400)
   }
@@ -172,12 +156,12 @@ app.post('/tasks', (req, res) => {
 
 app.delete('/tasks/:id', (req, res) => {
 
-  const task = db.tasks.find(task => task.id === Number(req.params.id))
+  const task = dbTasks.tasks.find(task => task.id === Number(req.params.id))
   if (task) {
-    const index = db.tasks.indexOf(task)
-    db.tasks.splice(index, 1);
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.tasks)
+    const index = dbTasks.tasks.indexOf(task)
+    dbTasks.tasks.splice(index, 1);
+    fs.writeFileSync(path.resolve(__dirname, tasksPath), JSON.stringify(dbTasks), 'utf-8')
+    res.status(200).send(dbTasks)
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] DELETE /tasks/${req.params.id}`)
   } else {
     res.send(404)
@@ -187,7 +171,7 @@ app.delete('/tasks/:id', (req, res) => {
 
 app.put('/tasks/:id', (req, res) => {
 
-  const task = db.tasks.find(task => task.id === Number(req.params.id))
+  const task = dbTasks.tasks.find(task => task.id === Number(req.params.id))
   console.log(task)
   console.log(req.body.visible)
   if (task && (req.body.body || req.body.create || req.body.remove || req.body.timeleft || req.body.deadline || req.body.link || "visible" in req.body || req.body.badges)) {
@@ -226,7 +210,7 @@ app.put('/tasks/:id', (req, res) => {
       task.badges = badges
     }
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] PUT /tasks/${req.params.id}`)
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+    fs.writeFileSync(path.resolve(__dirname, tasksPath), JSON.stringify(dbTasks), 'utf-8')
     res.status(200).send(task)
 
   } else {
@@ -240,127 +224,24 @@ app.put('/tasks/:id', (req, res) => {
 
 
 app.get('/notes', (req, res) => {
-  // #swagger.description = 'Get all active notes'
-  /* #swagger.responses[200] = {
-           description: 'Get all notes.',
-           schema: { $ref: '#/definitions/Notes' }
-   } */
   console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] GET /notes`)
-  res.send(db.notes)
+  res.send(dbNotes.notes)
 
 })
-
-// app.get('/notes/:id', (req, res) => {
-//   /* #swagger.responses[200] = {
-//            description: 'Get a specific note.',
-//            schema: { $ref: '#/definitions/Note' }
-//    } */
-
-//   const note = db.notes.find(note => note.uid === Number(req.params.id))
-//   if (note) {
-//     res.send(note)
-//   } else {
-//     res.send(404)
-//   }
-
-
-// })
-
-// app.post('/notes', (req, res) => {
-//   /*  #swagger.auto = false
-
-//             #swagger.path = '/notes'
-//             #swagger.method = 'post'
-//             #swagger.description = 'Endpoint added note.'
-//             #swagger.produces = ["application/json"]
-//             #swagger.consumes = ["application/json"]
-//         */
-
-//   /*  #swagger.parameters['body'] = {
-//           in: 'body',
-//           description: 'Body of note.',
-//           required: true,
-//           schema: {
-//                 $body: '<p>Test body</p>'
-//             }
-//       }
-//   */
-//   if (req.body.body) {
-//     const newNote: NoteType = {
-//       uid: Math.random(),
-//       folderUid: 0,
-//       label: "New note",
-//       body: req.body.body,
-//       create: Date.now().toString(),
-//       icon: ""
-//     }
-//     if (req.body.name) {
-//       newNote.label = req.body.name
-//     }
-
-//     db.notes.push(newNote)
-//     fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-//     res.status(200).send(db.notes)
-//   } else {
-//     res.send(400)
-//   }
-
-
-
-// })
-
-// app.delete('/notes/:id', (req, res) => {
-
-//   const note = db.notes.find(note => note.uid === Number(req.params.id))
-//   if (note) {
-//     const index = db.notes.indexOf(note)
-//     db.notes.splice(index, 1);
-//     fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-//     res.status(200).send(db.notes)
-
-//   } else {
-//     res.send(404)
-//   }
-
-// })
 
 app.put('/notes', (req, res) => {
 
-  db.notes = req.body
-  fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+  dbNotes.notes = req.body
+  fs.writeFileSync(path.resolve(__dirname, notesPath), JSON.stringify(dbNotes), 'utf-8')
   console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] PUT /notes`)
-  res.status(200).send(db.notes)
+  res.status(200).send(dbNotes.notes)
 })
 
 
 
-// app.get('/folders', (req, res) => {
-//   // #swagger.description = 'Get all active folders.'
-//   /* #swagger.responses[200] = {
-//            description: 'Get all folders.',
-//            schema: { $ref: '#/definitions/Folders' }
-//    } */
-
-//   res.send(db.folders)
-
-// })
-
-
-
-const removeSlash = (input: string): string => {
-  return input.replace(/"/gi, "\"")
-}
-
-
 app.get('/badges', (req, res) => {
-  // #swagger.description = 'Get all active badges'
-  /* #swagger.responses[200] = {
-           description: 'Get all badges.',
-           schema: { $ref: '#/definitions/Badges' }
-   } */
   console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] GET /badges`)
-  res.send(db.badges)
-
+  res.send(dbBadges.badges)
 })
 
 app.get('/badges/:id', (req, res) => {
@@ -369,7 +250,7 @@ app.get('/badges/:id', (req, res) => {
            schema: { $ref: '#/definitions/Badge' }
    } */
 
-  const badge = db.badges.find(badge => badge.id === Number(req.params.id))
+  const badge = dbBadges.badges.find(badge => badge.id === Number(req.params.id))
   if (badge) {
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] GET /badges/${req.params.id}`)
     res.send(badge)
@@ -381,25 +262,7 @@ app.get('/badges/:id', (req, res) => {
 })
 
 app.post('/badges', (req, res) => {
-  /*  #swagger.auto = false
 
-            #swagger.path = '/badges'
-            #swagger.method = 'post'
-            #swagger.description = 'Endpoint added badge.'
-            #swagger.produces = ["application/json"]
-            #swagger.consumes = ["application/json"]
-        */
-
-  /*  #swagger.parameters['body'] = {
-          in: 'body',
-          description: 'Data of badge.',
-          required: true,
-          schema: {
-            "color": 3,
-            "text": "WARNING"
-          }
-      }
-  */
   if (req.body.text && req.body.color) {
     const newBadge: BadgeType = {
       "id": Math.random(),
@@ -407,9 +270,9 @@ app.post('/badges', (req, res) => {
       "text": req.body.text
     }
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] POST /badges`)
-    db.badges.push(newBadge)
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.badges)
+    dbBadges.badges.push(newBadge)
+    fs.writeFileSync(path.resolve(__dirname, badgesPath), JSON.stringify(dbBadges), 'utf-8')
+    res.status(200).send(dbBadges.badges)
   } else {
     res.send(400)
   }
@@ -419,12 +282,12 @@ app.post('/badges', (req, res) => {
 
 app.delete('/badges/:id', (req, res) => {
 
-  const badge = db.badges.find(badge => badge.id === Number(req.params.id))
+  const badge = dbBadges.badges.find(badge => badge.id === Number(req.params.id))
   if (badge) {
-    const index = db.badges.indexOf(badge)
-    db.badges.splice(index, 1);
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.badges)
+    const index = dbBadges.badges.indexOf(badge)
+    dbBadges.badges.splice(index, 1);
+    fs.writeFileSync(path.resolve(__dirname, badgesPath), JSON.stringify(dbBadges), 'utf-8')
+    res.status(200).send(dbBadges.badges)
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] DELETE /badges/${req.params.id}`)
   } else {
     res.send(404)
@@ -434,7 +297,7 @@ app.delete('/badges/:id', (req, res) => {
 
 app.put('/badges/:id', (req, res) => {
 
-  const badge = db.badges.find(badge => badge.id === Number(req.params.id))
+  const badge = dbBadges.badges.find(badge => badge.id === Number(req.params.id))
   if (badge && (req.body.color || req.body.text)) {
 
     if (req.body.color) {
@@ -444,7 +307,7 @@ app.put('/badges/:id', (req, res) => {
       badge.text = req.body.text
     }
 
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
+    fs.writeFileSync(path.resolve(__dirname, badgesPath), JSON.stringify(dbBadges), 'utf-8')
     res.status(200).send(badge)
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] PUT /badges/${req.params.id}`)
   } else {
@@ -455,14 +318,8 @@ app.put('/badges/:id', (req, res) => {
 
 
 app.get('/settings', (req, res) => {
-  // #swagger.description = 'Get all settings'
-  /* #swagger.responses[200] = {
-           description: 'Get all settings.',
-           schema: { $ref: '#/definitions/Settings' }
-   } */
   console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] GET /settings`)
-  res.send(db.settings)
-
+  res.send(dbSettings.settings)
 })
 
 app.post('/settings/workings', (req, res) => {
@@ -473,9 +330,9 @@ app.post('/settings/workings', (req, res) => {
       "day": req.body.day
     }
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] POST /settings/workings`)
-    db.settings.date.workings.push(newWorking)
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.settings)
+    dbSettings.settings.date.workings.push(newWorking)
+    fs.writeFileSync(path.resolve(__dirname, settingsPath), JSON.stringify(dbSettings), 'utf-8')
+    res.status(200).send(dbSettings.settings)
   } else {
     res.send(400)
   }
@@ -483,12 +340,12 @@ app.post('/settings/workings', (req, res) => {
 
 app.delete('/settings/workings/:id', (req, res) => {
 
-  const working = db.settings.date.workings.find(working => working.id === Number(req.params.id))
+  const working = dbSettings.settings.date.workings.find(working => working.id === Number(req.params.id))
   if (working) {
-    const index = db.settings.date.workings.indexOf(working)
-    db.settings.date.workings.splice(index, 1);
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.settings)
+    const index = dbSettings.settings.date.workings.indexOf(working)
+    dbSettings.settings.date.workings.splice(index, 1);
+    fs.writeFileSync(path.resolve(__dirname, settingsPath), JSON.stringify(dbSettings), 'utf-8')
+    res.status(200).send(dbSettings.settings)
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] DELETE /settings/workings/${req.params.id}`)
   } else {
     res.send(404)
@@ -500,17 +357,15 @@ app.put('/settings/weekend', (req, res) => {
 
 
   if (req.body) {
-    db.settings.date.weekend = req.body
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.settings)
+    dbSettings.settings.date.weekend = req.body
+    fs.writeFileSync(path.resolve(__dirname, settingsPath), JSON.stringify(dbSettings), 'utf-8')
+    res.status(200).send(dbSettings.settings)
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] PUT /settings/weekend`)
   } else {
     res.send(404)
   }
 
 })
-
-
 
 app.post('/settings/vacations', (req, res) => {
 
@@ -521,13 +376,14 @@ app.post('/settings/vacations', (req, res) => {
       "end": req.body.end
     }
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] POST /settings/vacations`)
-    db.settings.date.vacations.push(newVacation)
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.settings)
+    dbSettings.settings.date.vacations.push(newVacation)
+    fs.writeFileSync(path.resolve(__dirname, settingsPath), JSON.stringify(dbSettings), 'utf-8')
+    res.status(200).send(dbSettings.settings)
   } else {
     res.send(400)
   }
 })
+
 app.post('/settings/holidays', (req, res) => {
 
   if (req.body.id && req.body.day) {
@@ -536,9 +392,9 @@ app.post('/settings/holidays', (req, res) => {
       "day": req.body.day
     }
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] POST /settings/holidays`)
-    db.settings.date.holidays.push(newHoliday)
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.settings)
+    dbSettings.settings.date.holidays.push(newHoliday)
+    fs.writeFileSync(path.resolve(__dirname, settingsPath), JSON.stringify(dbSettings), 'utf-8')
+    res.status(200).send(dbSettings.settings)
   } else {
     res.send(400)
   }
@@ -546,12 +402,12 @@ app.post('/settings/holidays', (req, res) => {
 
 app.delete('/settings/holidays/:id', (req, res) => {
 
-  const holiday = db.settings.date.holidays.find(holiday => holiday.id === Number(req.params.id))
+  const holiday = dbSettings.settings.date.holidays.find(holiday => holiday.id === Number(req.params.id))
   if (holiday) {
-    const index = db.settings.date.holidays.indexOf(holiday)
-    db.settings.date.holidays.splice(index, 1);
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.settings)
+    const index = dbSettings.settings.date.holidays.indexOf(holiday)
+    dbSettings.settings.date.holidays.splice(index, 1);
+    fs.writeFileSync(path.resolve(__dirname, settingsPath), JSON.stringify(dbSettings), 'utf-8')
+    res.status(200).send(dbSettings.settings)
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] DELETE /settings/holidays/${req.params.id}`)
   } else {
     res.send(404)
@@ -561,12 +417,12 @@ app.delete('/settings/holidays/:id', (req, res) => {
 
 app.delete('/settings/vacations/:id', (req, res) => {
 
-  const vacation = db.settings.date.vacations.find(vacation => vacation.id === Number(req.params.id))
+  const vacation = dbSettings.settings.date.vacations.find(vacation => vacation.id === Number(req.params.id))
   if (vacation) {
-    const index = db.settings.date.vacations.indexOf(vacation)
-    db.settings.date.vacations.splice(index, 1);
-    fs.writeFileSync(path.resolve(__dirname, 'db.json'), JSON.stringify(db), 'utf-8')
-    res.status(200).send(db.settings)
+    const index = dbSettings.settings.date.vacations.indexOf(vacation)
+    dbSettings.settings.date.vacations.splice(index, 1);
+    fs.writeFileSync(path.resolve(__dirname, settingsPath), JSON.stringify(dbSettings), 'utf-8')
+    res.status(200).send(dbSettings.settings)
     console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] DELETE /settings/vacations/${req.params.id}`)
   } else {
     res.send(404)
