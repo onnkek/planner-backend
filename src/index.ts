@@ -81,6 +81,13 @@ interface DBTasksType {
 interface DBSettingsType {
   settings: SettingsType
 }
+interface WidgetType {
+  type: string
+  position: { x: number, y: number }
+}
+interface DBWidgetsType {
+  widgets: WidgetType[]
+}
 
 const app = express()
 
@@ -92,12 +99,14 @@ const tasksPath = 'db/tasks.json'
 const notesPath = 'db/notes.json'
 const badgesPath = 'db/badges.json'
 const settingsPath = 'db/settings.json'
+const widgetsPath = 'db/widgets.json'
 
 
 const dbTasks: DBTasksType = JSON.parse(fs.readFileSync(path.resolve(__dirname, tasksPath), 'utf-8'))
 const dbNotes: DBNotesType = JSON.parse(fs.readFileSync(path.resolve(__dirname, notesPath), 'utf-8'))
 const dbBadges: DBBadgesType = JSON.parse(fs.readFileSync(path.resolve(__dirname, badgesPath), 'utf-8'))
 const dbSettings: DBSettingsType = JSON.parse(fs.readFileSync(path.resolve(__dirname, settingsPath), 'utf-8'))
+const dbWidgets: DBWidgetsType = JSON.parse(fs.readFileSync(path.resolve(__dirname, widgetsPath), 'utf-8'))
 
 app.use(cors());
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerFile))
@@ -263,7 +272,7 @@ app.get('/badges/:id', (req, res) => {
 
 app.post('/badges', (req, res) => {
 
-  if (req.body.text && req.body.color) {
+  if (req.body.text) {
     const newBadge: BadgeType = {
       "id": Math.random(),
       "color": req.body.color,
@@ -430,6 +439,26 @@ app.delete('/settings/vacations/:id', (req, res) => {
 
 })
 
+
+
+app.get('/widgets', (req, res) => {
+  console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] GET /widgets`)
+  res.send(dbWidgets.widgets)
+})
+
+app.put('/widgets', (req, res) => {
+
+
+  if (req.body) {
+    dbWidgets.widgets = req.body
+    fs.writeFileSync(path.resolve(__dirname, widgetsPath), JSON.stringify(dbWidgets), 'utf-8')
+    res.status(200).send(dbWidgets.widgets)
+    console.log(`[${new Date().toLocaleDateString("ru-RU", { hour: 'numeric', minute: 'numeric', second: 'numeric', day: 'numeric', year: 'numeric', month: 'numeric' })}][${req.hostname}] PUT /widgets`)
+  } else {
+    res.send(404)
+  }
+
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
